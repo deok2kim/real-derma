@@ -25,13 +25,13 @@ export function ClinicCard({ clinic, isSelected = false, onClick }: ClinicCardPr
       type="button"
       onClick={onClick}
       className={cn(
-        'w-full text-left px-4 py-4 border-b border-gray-100 hover:bg-blue-50 transition-colors focus:outline-none focus:bg-blue-50',
-        isSelected && 'bg-blue-50 border-l-4 border-l-blue-600'
+        'w-full text-left px-4 py-4 border-b border-gray-100 dark:border-gray-800 hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:bg-blue-50 dark:focus:bg-gray-800',
+        isSelected && 'bg-blue-50 dark:bg-gray-800 border-l-4 border-l-blue-600'
       )}
     >
       {/* Header row */}
       <div className="flex items-start justify-between gap-2 mb-1.5">
-        <h3 className="text-sm font-semibold text-gray-900 leading-tight line-clamp-1 flex-1">
+        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 leading-tight line-clamp-1 flex-1">
           {clinic.name}
         </h3>
         <button
@@ -46,14 +46,14 @@ export function ClinicCard({ clinic, isSelected = false, onClick }: ClinicCardPr
       </div>
 
       {/* Address */}
-      <div className="flex items-center gap-1 text-xs text-gray-500 mb-1">
+      <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 mb-1">
         <MapPin size={12} className="flex-shrink-0" />
         <span className="line-clamp-1">{clinic.address}</span>
       </div>
 
       {/* Phone */}
       {clinic.phone && (
-        <div className="flex items-center gap-1 text-xs text-gray-500 mb-2">
+        <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 mb-2">
           <Phone size={12} className="flex-shrink-0" />
           <span>{clinic.phone}</span>
         </div>
@@ -65,7 +65,7 @@ export function ClinicCard({ clinic, isSelected = false, onClick }: ClinicCardPr
           {clinic.specialties.slice(0, 4).map((s) => (
             <span
               key={s}
-              className="text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full"
+              className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-1.5 py-0.5 rounded-full"
             >
               {s}
             </span>

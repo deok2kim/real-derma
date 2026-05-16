@@ -65,7 +65,7 @@ export default function HomePage() {
         </div>
 
         {/* Sidebar */}
-        <aside className="w-full md:w-[500px] flex flex-col border-l border-gray-200 bg-white overflow-hidden">
+        <aside className="w-full md:w-[500px] flex flex-col border-l border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden">
           {selectedClinic ? (
             <ClinicDetail />
           ) : (

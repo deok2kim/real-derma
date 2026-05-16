@@ -31,7 +31,7 @@ export default function ClinicList() {
   const sorted = [...clinics].sort((a, b) => b.real_derma_score - a.real_derma_score);
 
   const filterBar = (
-    <div className="px-4 py-3 bg-gray-50 border-b border-gray-100 space-y-2 flex-shrink-0">
+    <div className="px-4 py-3 bg-gray-50 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 space-y-2 flex-shrink-0">
       <div className="flex flex-wrap gap-1.5">
         <button
           onClick={() => setRealOnly(!realOnly)}
@@ -39,7 +39,7 @@ export default function ClinicList() {
             'text-xs px-2.5 py-1 rounded-full font-medium transition-colors border',
             realOnly
               ? 'bg-green-600 text-white border-green-600'
-              : 'bg-white text-gray-600 border-gray-200 hover:border-green-400'
+              : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-green-400'
           )}
         >
           진짜 피부과만
