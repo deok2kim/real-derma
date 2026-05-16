@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowLeft, MapPin, Phone, ExternalLink, Flag, Star } from 'lucide-react';
+import { ArrowLeft, MapPin, Phone, ExternalLink, Flag, Star, Heart } from 'lucide-react';
 import { useMapStore } from '@/store/map-store';
+import { useFavoritesStore } from '@/store/favorites-store';
 import { RealDermaBadge } from './real-derma-badge';
 import { ReportDialog } from '@/components/forms/report-dialog';
 import { formatRating } from '@/lib/utils';
@@ -20,11 +21,13 @@ const DAY_LABELS: Record<string, string> = {
 export { ClinicDetail };
 export default function ClinicDetail() {
   const { selectedClinic, setSelectedClinic } = useMapStore();
+  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
   const [reportOpen, setReportOpen] = useState(false);
 
   if (!selectedClinic) return null;
 
   const clinic = selectedClinic;
+  const saved = isFavorite(clinic.id);
 
   const kakaoMapUrl = clinic.kakao_place_id
     ? `https://place.map.kakao.com/${clinic.kakao_place_id}`
@@ -161,6 +164,60 @@ export default function ClinicDetail() {
             </div>
           </div>
 
+          {/* Highlight tags */}
+          {clinic.highlight_tags && clinic.highlight_tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {clinic.highlight_tags.map((tag) => (
+                <span key={tag} className="text-xs text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full font-medium">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Treatment focus ratio */}
+          {clinic.insurance_ratio > 0 && (
+            <div className="bg-gray-50 rounded-lg p-3">
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">치료 중심도</h3>
+              <div className="flex items-center gap-3">
+                <div className="flex-1 bg-gray-200 rounded-full h-2.5">
+                  <div
+                    className="bg-green-500 h-2.5 rounded-full transition-all"
+                    style={{ width: `${Math.round(clinic.insurance_ratio * 100)}%` }}
+                  />
+                </div>
+                <span className="text-sm font-bold text-green-700">
+                  {Math.round(clinic.insurance_ratio * 100)}%
+                </span>
+              </div>
+              <p className="text-[11px] text-gray-500 mt-1">건강보험 진료 비율 기반</p>
+            </div>
+          )}
+
+          {/* AI Review Summary */}
+          {clinic.review_summary && (
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
+                  <span className="text-white text-[10px] font-bold">AI</span>
+                </div>
+                <h3 className="text-xs font-semibold text-blue-800">AI 분석 요약</h3>
+              </div>
+              <p className="text-sm text-gray-700 leading-relaxed">{clinic.review_summary}</p>
+              <p className="text-[10px] text-gray-400 mt-2">리뷰 데이터를 기반으로 AI가 생성한 요약입니다.</p>
+            </div>
+          )}
+
+          {/* Sample review */}
+          {clinic.sample_review && (
+            <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-100">
+              <h3 className="text-xs font-semibold text-yellow-800 mb-2">실제 후기</h3>
+              <p className="text-sm text-gray-700 leading-relaxed italic">
+                &ldquo;{clinic.sample_review}&rdquo;
+              </p>
+            </div>
+          )}
+
           {/* Score details */}
           <div className="bg-gray-50 rounded-lg p-3">
             <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
@@ -182,14 +239,27 @@ export default function ClinicDetail() {
             )}
           </div>
 
-          {/* Report button */}
-          <button
-            onClick={() => setReportOpen(true)}
-            className="flex items-center justify-center gap-2 w-full py-2.5 text-sm text-gray-500 hover:text-red-600 border border-gray-200 hover:border-red-200 rounded-lg transition-colors"
-          >
-            <Flag size={14} />
-            정보 오류 신고
-          </button>
+          {/* Save & Report buttons */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => saved ? removeFavorite(clinic.id) : addFavorite(clinic)}
+              className={`flex items-center justify-center gap-2 flex-1 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                saved
+                  ? 'bg-red-50 text-red-600 border border-red-200'
+                  : 'bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100'
+              }`}
+            >
+              <Heart size={14} className={saved ? 'fill-red-500' : ''} />
+              {saved ? '저장됨' : '저장'}
+            </button>
+            <button
+              onClick={() => setReportOpen(true)}
+              className="flex items-center justify-center gap-2 flex-1 py-2.5 text-sm text-gray-500 hover:text-red-600 border border-gray-200 hover:border-red-200 rounded-lg transition-colors"
+            >
+              <Flag size={14} />
+              정보 오류 신고
+            </button>
+          </div>
         </div>
       </div>
 

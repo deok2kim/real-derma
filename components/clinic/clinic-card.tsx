@@ -1,6 +1,7 @@
-import { MapPin, Phone, Star } from 'lucide-react';
+import { MapPin, Phone, Star, Heart } from 'lucide-react';
 import { RealDermaBadge } from './real-derma-badge';
 import { cn, formatRating } from '@/lib/utils';
+import { useFavoritesStore } from '@/store/favorites-store';
 import type { Clinic } from '@/types';
 
 interface ClinicCardProps {
@@ -10,6 +11,15 @@ interface ClinicCardProps {
 }
 
 export function ClinicCard({ clinic, isSelected = false, onClick }: ClinicCardProps) {
+  const { isFavorite, addFavorite, removeFavorite } = useFavoritesStore();
+  const saved = isFavorite(clinic.id);
+
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (saved) removeFavorite(clinic.id);
+    else addFavorite(clinic);
+  };
+
   return (
     <button
       type="button"
@@ -21,9 +31,17 @@ export function ClinicCard({ clinic, isSelected = false, onClick }: ClinicCardPr
     >
       {/* Header row */}
       <div className="flex items-start justify-between gap-2 mb-1.5">
-        <h3 className="text-sm font-semibold text-gray-900 leading-tight line-clamp-1">
+        <h3 className="text-sm font-semibold text-gray-900 leading-tight line-clamp-1 flex-1">
           {clinic.name}
         </h3>
+        <button
+          type="button"
+          onClick={handleToggleFavorite}
+          className="flex-shrink-0 p-1 -m-1 hover:scale-110 transition-transform"
+          title={saved ? '저장 취소' : '저장'}
+        >
+          <Heart size={16} className={saved ? 'text-red-500 fill-red-500' : 'text-gray-300'} />
+        </button>
         <RealDermaBadge score={clinic.real_derma_score} size="sm" className="flex-shrink-0" />
       </div>
 
@@ -55,6 +73,17 @@ export function ClinicCard({ clinic, isSelected = false, onClick }: ClinicCardPr
           {clinic.specialties.length > 4 && (
             <span className="text-xs text-gray-400">+{clinic.specialties.length - 4}</span>
           )}
+        </div>
+      )}
+
+      {/* Highlight tags */}
+      {clinic.highlight_tags && clinic.highlight_tags.length > 0 && (
+        <div className="flex flex-wrap gap-1 mb-2">
+          {clinic.highlight_tags.slice(0, 2).map((tag) => (
+            <span key={tag} className="text-[11px] text-green-700 bg-green-50 px-1.5 py-0.5 rounded">
+              {tag}
+            </span>
+          ))}
         </div>
       )}
 

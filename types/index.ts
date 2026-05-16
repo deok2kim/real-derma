@@ -17,6 +17,9 @@ export interface Clinic {
   average_rating: number;
   insurance_ratio: number;
   real_derma_score: number;
+  review_summary: string | null;
+  highlight_tags: string[] | null;
+  sample_review: string | null;
   data_source: 'crawl' | 'manual' | 'submission';
   verified_at: string | null;
   created_at: string;

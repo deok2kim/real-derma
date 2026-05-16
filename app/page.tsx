@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import MapContainer from '@/components/map/map-container';
@@ -19,6 +19,8 @@ export default function HomePage() {
     setClinics,
     setIsLoading,
   } = useMapStore();
+
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const fetchClinics = useCallback(async () => {
     if (!bounds) return;
@@ -43,7 +45,13 @@ export default function HomePage() {
   }, [bounds, realOnly, selectedSpecialty, setClinics, setIsLoading]);
 
   useEffect(() => {
-    fetchClinics();
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      fetchClinics();
+    }, 500);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
   }, [fetchClinics]);
 
   return (
@@ -57,7 +65,7 @@ export default function HomePage() {
         </div>
 
         {/* Sidebar */}
-        <aside className="w-full md:w-[400px] flex flex-col border-l border-gray-200 bg-white overflow-hidden">
+        <aside className="w-full md:w-[500px] flex flex-col border-l border-gray-200 bg-white overflow-hidden">
           {selectedClinic ? (
             <ClinicDetail />
           ) : (

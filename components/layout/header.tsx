@@ -2,20 +2,23 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Heart } from 'lucide-react';
 import { SearchBar } from '@/components/search-bar';
+import { useFavoritesStore } from '@/store/favorites-store';
 
 export { Header };
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const count = useFavoritesStore((s) => s.favorites.length);
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0 text-xl font-bold text-blue-600 tracking-tight">
-            리얼더마
+          <Link href="/" className="flex-shrink-0 flex items-baseline gap-2">
+            <span className="text-xl font-bold text-blue-600 tracking-tight">리얼더마</span>
+            <span className="hidden sm:inline text-xs text-gray-400 font-medium">진짜 피부 치료를 위한 플랫폼</span>
           </Link>
 
           {/* Desktop search */}
@@ -25,6 +28,18 @@ export default function Header() {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-6">
+            <Link
+              href="/favorites"
+              className="relative text-sm font-medium text-gray-600 hover:text-red-500 transition-colors flex items-center gap-1"
+            >
+              <Heart size={16} />
+              저장목록
+              {count > 0 && (
+                <span className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  {count}
+                </span>
+              )}
+            </Link>
             <Link
               href="/about"
               className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors"
@@ -58,6 +73,14 @@ export default function Header() {
       {/* Mobile nav drawer */}
       {mobileOpen && (
         <div className="md:hidden border-t border-gray-100 bg-white px-4 py-4 flex flex-col gap-3">
+          <Link
+            href="/favorites"
+            className="text-sm font-medium text-gray-700 hover:text-red-500 py-2 flex items-center gap-2"
+            onClick={() => setMobileOpen(false)}
+          >
+            <Heart size={16} />
+            저장목록 {count > 0 && `(${count})`}
+          </Link>
           <Link
             href="/about"
             className="text-sm font-medium text-gray-700 hover:text-blue-600 py-2"

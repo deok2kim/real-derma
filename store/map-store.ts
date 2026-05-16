@@ -10,8 +10,10 @@ interface MapState {
   realOnly: boolean;
   selectedSpecialty: string | null;
   searchQuery: string;
+  myLocation: { lat: number; lng: number } | null;
   isLoading: boolean;
 
+  setMyLocation: (loc: { lat: number; lng: number } | null) => void;
   setCenter: (center: { lat: number; lng: number }) => void;
   setZoom: (zoom: number) => void;
   setBounds: (bounds: MapBounds) => void;
@@ -32,8 +34,10 @@ export const useMapStore = create<MapState>((set) => ({
   realOnly: true,
   selectedSpecialty: null,
   searchQuery: '',
+  myLocation: null,
   isLoading: false,
 
+  setMyLocation: (loc) => set({ myLocation: loc }),
   setCenter: (center) => set({ center }),
   setZoom: (zoom) => set({ zoom }),
   setBounds: (bounds) => set({ bounds }),
