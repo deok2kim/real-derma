@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist } from 'next/font/google';
 import Script from 'next/script';
 import { ThemeProvider } from '@/components/theme-provider';
+import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 
 const geistSans = Geist({
@@ -80,6 +81,7 @@ export default function RootLayout({
         />
         <ThemeProvider>
           {children}
+          <Analytics />
           {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && (
             <Script
               async
